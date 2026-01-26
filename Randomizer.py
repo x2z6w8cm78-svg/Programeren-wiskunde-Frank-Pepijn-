@@ -5,7 +5,7 @@ from Reverse_Bit_converter import omzetten
 
 Omschakel_kans = 100 #De 1 op de x kans dat een 1 met een 0 verwisseld (of andersom)
 
-def Verzenden_vertoren(oorspronkelijke_data):
+def Verzenden_verstoren(oorspronkelijke_data):
     """Verstoord de data van vectoren om hamming-code tot uiting te laten komen"""
     verstoorde_vectoren = []
     for vector in oorspronkelijke_data: #Schakeld met een bepaalde kans de binaire waarde om van elk kental binnen de Hamming-vector
@@ -71,8 +71,8 @@ def corrigeren(vectoren,onverstuurde_data):
         gemiddelde.append(vector)
         while str("H_d"*gemiddelde[-1]) != str(Pariteits_controle_vector(0,0,0,0,0,0,0,0,0,0,0,0,0)): #Indien incorrect, twee maal opnieuw versturen
             gemiddelde.pop()       
-            gemiddelde.append((Verzenden_vertoren([onverstuurde_data[index]]))[0][0])
-            gemiddelde.append((Verzenden_vertoren([onverstuurde_data[index]]))[0][0])
+            gemiddelde.append((Verzenden_verstoren([onverstuurde_data[index]]))[0][0])
+            gemiddelde.append((Verzenden_verstoren([onverstuurde_data[index]]))[0][0])
             gemiddelde.append(gewogen_vector(gemiddelde,len(gemiddelde)))
 
         Correcte_data.append(gemiddelde[-1])
