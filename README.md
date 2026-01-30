@@ -1,22 +1,139 @@
-# Programeren-wiskunde-Frank-Pepijn
-# Eind project over Hamming-code en bitwise
-# Introductie
-Een hamming code is een code die extra informatie toevoegt aan een streng met data van enen en nullen zodat dit extra verzekerd wordt. Als namelijk een bitfout optreedt (dus van 1 naar 0 of vic versa) kan dit gedetecteerd worden en opgelost op diverse manieren.
-Hammingcodes werken meer intuïtief door middel van matrixen waarbij de pariteitsbits worden uitgerekend door middel van een matrixvermenigvuldiging werkt biwise door gebruik te maken van bolean-operaties wat wel minder overzichtelijker is maar (in ons geval) gemiddeld gezien tot vier maal zo snel is.
-In ons geval is de Hamming-code een (37,24) wat inhoud dat er 24 databits aanwezig zijn en die verzekerd worden door 13 pariteitsbits. De bitwise code is een standaard (7,4) dus 4 databits en 3 pariteitsbits.
+# Programmeren-Wiskunde – Hamming & Bitwise Codes, Pepijn-Frank
+Eindproject van Frank & Pepijn over foutdetectie en foutcorrectie met Hamming-codes en bitwise implementaties.
 
-# Uitleg 
-Dit project bestaat dus uit twee losse codes war verschillende python-bestanden interacties hebben met elkaar, vandaar ook de twee Main.py-bestandjes. 
-Alles wat te maken heeft met de Bitwise code staat ook op die manier aangeduid in de naam van het bestand, de andere zijn onderdeel van de hamming-(37,24) code.
-Als je wilt testen hoe de code werkt ga je naar een van beide main.py-bestandjes en runt hem. Als je dat doet wordt er aan je gevraagt welke tekst je wilt "overzetten" wat gaat simuleren hoe de hamming/bitwise in zijn werking gaat en stuurt het eerst door naar de "Bit_converter".
-Hier wordt tekst omgezet in binair. Voor bitwise was dit op een simpele manier gedaan door middel van ASCII wat al een unieke combinatie van enen en nullen heeft voor elk karakter, deze bestaat uit 8 nieuwe karakters dus is het opgesplitst in twee stukken van 4 zodat de (7,4) het hendellen kan. Bij de hamming gaat het nog niet zo gemakkelijk omdat het iets efficiënter te werk te gaan. Door wat karakters uit te sluiten waren er maar 6 bits nodig een karakter te coderen dus gaan er vier karakters per vector.
-Laatste ding wat op kan vallen is dat bitwise in strings werkt en hamming door middel van classes dit hadden we zo gedaan omdat het werken met classes en stuk overzichtelijker gaat alleen voor de snelheid van bitwise is het beter om met strings te werken.
-Als laatst wordt de data verzekerd met pariteitsbits, bij bitwise door middel van de xor-functie en bij hamming door middel van de matrixmultiplicatie verborgen in de class om overzichtelijkheid te bewaren.
+## Introductie
+In dit project vergelijken we twee manieren (bitwise-hamming) om bitfouten te detecteren en recht te zetten tijdens datatransmissie:
+- **Hamming-code (37,24)**  
+  24 databits + 13 pariteitsbits, geïmplementeerd met matrixvermenigvuldiging en classes. Trager maar overzichtelijker en intuïtief beter te begrijpen.
+- **Bitwise-code (7,4)**  
+  4 databits + 3 pariteitsbits, geïmplementeerd met bitwise XOR-operaties en strings. Sneller (**minimaal 4x**) alleen abstracter 
 
-Dan begint het verzenden in het bestand "Verzender_controlepost.py" waar eerst met een bepaalde factor "Omschakel_kans" de data wordt verstoord om de bitfouten te representeren in het echt. Daarna is het "verzonden" en is het de taak de originele data terug te krijgen dit wordt gedaan door wanneer het niet klopt (de pariteitsbits komen niet overeen met wat het hoort te zijn als je het weer narekend) de data opnieuw op te vragen en democratisch dan te besluiten wat de vector aan data zou moeten wezen (twee enen en een nul betekent dat er waarschijnlijk wel een een had moeten staan) en zo de fouten eruit te filteren door middel van kansrekening.
+## Werking van de code
+1. Invoer van tekst via 'Main.py' (Hamming) of 'Main_bitwise.py' (Bitwise)
+2. Tekst naar binair via 'Bit_converter.py'/'Bitwise_converter'
+3. Toevoegen van pariteitsbits voor verzekering van data
+4. Simulatie van transmissiefouten en rechtzetten als fout geïmplementeerd via 'Verzender_controlepost.py'/'Biwise_verzender_controlepost.py'
+6. Binair → tekst via 'Reverse_bit_converter.py'/'Reverse_Bitwise_converter.py'
 
-Als de data eenmaal weer klopt kan het weer terug omgezet worden en dir wordt in het bestand "Reverse_bit_converter.py" gedaan waar binair weer wordt omgezet in het corresponderende karakter. Om het process erachter iets meer te laten leven wordt tussen de nieuwe stukjes tekst een tussentijdse tekst uitegeprint met een getal erbij (erboven) wat staat voor hoe vaak het nodig was de tekst te moeten sturen voordat het klopte.
+Tijdens het proces wordt tussentijdse output geprint, inclusief het aantal pogingen dat nodig was om foutloze data te ontvangen.
 
-# Voorbeeld met opmerkingen
+## 🗂 Bestandsstructuur
+- 'Main.py' – startpunt Hamming-(37,24)
+- 'Main_bitwise.py' – startpunt Bitwise-(7,4)
+- 'Bit_converter.py' – tekst naar binair plus partiteitsbits verzekering Hamming
+- 'Bitwise_xor_verzekeraar.py' - tekst naar binair plus pariteitsbits verzekering Bitwise
+- 'Verzender_controlepost.py' – foutinjectie en correctie Hamming
+- 'Bitwise_verzender_controlepost.py' - foutinjectie en correctie Bitwise
+- 'Reverse_bit_converter.py' – binair naar tekst Hamming
+- 'Reverse_Bitwise_converter.py' - Binair naar tekst Bitwise
+- 'hamming_vectoren_classes.py' - Verzamel plaats van alle classes die gebruikt zijn met hun karakteristieke functies
+- 
+## Voorbeeld met opmerkingen
 Nu gaat de tekst "Zo werken de volgende codes nou echt!" door de codes heen met een omschakelkans van 20, met andere woorden 5% van de bits krijgt een bitfout.
+1-Merk op dat spaties tellen ook als karakters
+2-Merk op dat Hamming verzendt grotere blokken (37 bits), waardoor vaker hertransmissie nodig is.
+3-Merk op dat Bitwise kan incidenteel fouten doorlaten bij meerdere (>2) bitfouten binnen één blok.
+
 Main.py (Hamming-(37,24)):
+1
+Zo w
+3
+Zo werke
+3
+Zo werken de 
+1
+Zo werken de vol
+5
+Zo werken de volgend
+5
+Zo werken de volgende co
+1
+Zo werken de volgende codes 
+3
+Zo werken de volgende codes nou 
+7
+Zo werken de volgende codes nou echt
+3
+Zo werken de volgende codes nou echt!
+
+Main_bitwise.py (Bitwise-(7,4)):
+1
+Z
+3
+Zo
+1
+Zo 
+3
+Zo w
+1
+Zo we
+3
+Zo wer
+3
+Zo werk
+1
+Zo werkl
+1
+Zo werkln
+1
+Zo werkln
+3
+Zo werkln d
+1
+Zo werkln de
+1
+Zo werkln de
+3
+Zo werkln de v
+1
+Zo werkln de vo
+1
+Zo werkln de vol
+3
+Zo werkln de volg
+1
+Zo werkln de volge
+1
+Zo werkln de volgen
+5
+Zo werkln de volgend
+1
+Zo werkln de volgende
+1
+Zo werkln de volgende
+1
+Zo werkln de volgende c
+1
+Zo werkln de volgende co
+3
+Zo werkln de volgende cod
+3
+Zo werkln de volgende code
+3
+Zo werkln de volgende codes
+1
+Zo werkln de volgende codes
+5
+Zo werkln de volgende codes n
+3
+Zo werkln de volgende codes no
+3
+Zo werkln de volgende codes nou
+1
+Zo werkln de volgende codes nou
+1
+Zo werkln de volgende codes nou e
+1
+Zo werkln de volgende codes nou ec
+3
+Zo werkln de volgende codes nou ech
+3
+Zo werkln de volgende codes nou ech$
+1
+Zo werkln de volgende codes nou ech$!
+
+# Downloads nodig
+Zelf hadden wij de volgende dingen gedownload om de code werkende te krijgen:
+-Pylance, v2025.10.4
+-Python, v2026.0.0
+-Python Environments v1.16.0
